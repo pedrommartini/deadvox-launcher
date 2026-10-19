@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "DeadVox",
+  "version": "0.1.0-alpha.5",
+  "identifier": "app.deadlock.dubbing",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1438",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [{
+      "label": "main",
+      "title": "DeadVox",
+      "width": 1160,
+      "height": 790,
+      "minWidth": 800,
+      "minHeight": 620,
+      "center": true,
+      "decorations": false,
+      "backgroundColor": "#0D0D0F",
+      "theme": "Dark",
+      "dragDropEnabled": false
+    }],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost http://127.0.0.1:1438 ws://127.0.0.1:1438"
+    }
+  },
+  "bundle": { "active": false, "icon": ["icons/icon.ico"] }
+}

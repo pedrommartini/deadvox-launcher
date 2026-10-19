@@ -1,0 +1,28 @@
+[package]
+name = "deadlock-dubbing"
+version = "0.1.0-alpha.5"
+edition = "2024"
+description = "DeadVox community dubbing launcher for Deadlock"
+publish = false
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["image-png"] }
+tauri-plugin-single-instance = "2"
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+sha2 = "0.10.9"
+regex = "1"
+semver = "1"
+reqwest = { version = "0.13.5", default-features = false, features = ["blocking", "json", "native-tls", "system-proxy"] }
+windows-sys = { version = "0.61.2", features = ["Win32_Foundation", "Win32_Security", "Win32_System_Registry", "Win32_System_Threading", "Win32_System_Com", "Win32_System_Diagnostics_ToolHelp", "Win32_UI_Shell", "Win32_UI_Shell_Common", "Win32_UI_WindowsAndMessaging"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

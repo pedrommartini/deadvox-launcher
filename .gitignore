@@ -1,0 +1,57 @@
+# Private development repository only. Never publish this source tree.
+# Deny by default; explicitly allow application source without production data.
+*
+!.gitignore
+!README.md
+!RELEASE-NOTES.md
+!app/
+!app/src/
+!app/src/**
+!app/public/
+!app/public/assets/
+!app/public/assets/heroes.json
+!app/public/assets/heroes/
+!app/public/assets/heroes/**
+!app/public/assets/brand/
+!app/public/assets/brand/**
+!app/public/assets/support/
+!app/public/assets/support/**
+!app/index.html
+!app/package.json
+!app/package-lock.json
+!app/tsconfig.json
+!app/vite.config.ts
+!app/src-tauri/
+!app/src-tauri/src/
+!app/src-tauri/src/**
+!app/src-tauri/resources/
+!app/src-tauri/resources/voice-packs.json
+!app/src-tauri/resources/update-source.json
+!app/src-tauri/icons/
+!app/src-tauri/icons/**
+!app/src-tauri/capabilities/
+!app/src-tauri/capabilities/default.json
+!app/src-tauri/Cargo.toml
+!app/src-tauri/Cargo.lock
+!app/src-tauri/build.rs
+!app/src-tauri/tauri.conf.json
+!scripts/
+!scripts/build.ps1
+!scripts/audit-publication.ps1
+!scripts/verify-portable.ps1
+!scripts/prepare-release.ps1
+!docs/
+!docs/public-pack-contract.md
+!docs/TESTING.md
+!docs/PORTABLE-README.txt
+!docs/UPDATES.md
+!.github/
+!.github/workflows/
+!.github/workflows/windows.yml
+
+# Local development context contains private workspace references, never publish.
+/AGENTS.md
+/HANDOFF.md
+
+# Rejected visual experiment; kept out of the tracked public asset set.
+/app/public/assets/support/support-gpu-coxinha.png

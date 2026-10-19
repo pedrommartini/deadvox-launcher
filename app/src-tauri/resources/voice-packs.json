@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "packs": [
+    {
+      "id": "pt-br-lady-geist",
+      "language": "pt-BR",
+      "version": "0.1.0-alpha.1",
+      "file": "voice-packs/pt-BR/lady-geist-0.1.0_dir.vpk",
+      "sha256": "7cbc3a2587d2683b9bdea3382d08b597654a1a3bc44304a746355a64c2465e3e",
+      "bytes": 174993618,
+      "entry_count": 1841,
+      "heroes": [
+        {
+          "asset_id": "ghost",
+          "total": 1835,
+          "available": 1835
+        }
+      ],
+      "download_url": null
+    }
+  ]
+}
