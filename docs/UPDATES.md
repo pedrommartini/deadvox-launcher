@@ -41,7 +41,8 @@ constructs public metadata from explicit fields. It never uploads anything.
    `app/src-tauri/resources/update-source.json` and rebuild. This source is
    embedded in the executable. Users cannot change it through the UI, native
    commands, command-line arguments or saved state. Obsolete saved repository
-   settings are ignored. The default is null until the developer chooses a source.
+   settings are ignored. The official source is `pedrommartini/deadvox-downloads`;
+   `pedrommartini/deadvox-launcher` contains private development source only.
 
 Keep application source in a private development repository. Use a separate
 public download-only repository for release assets and user-facing documentation;

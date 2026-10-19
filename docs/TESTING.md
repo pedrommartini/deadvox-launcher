@@ -44,6 +44,12 @@ future externally distributed copy. Saved settings, caches and local packs are
 ignored by Git. The report is written to `builds/publication-audit.json`.
 This audit does not publish anything, and the build does not create a ZIP.
 
+For a clean external copy, use `scripts/prepare-portable.ps1` and audit with
+`-ForDistribution`. This mode requires third-party notices and rejects local
+user-data. The preparation verifies copied files against the build receipt and
+voice-pack catalog. About embeds the notices so executable-only client updates
+also deliver their applicable notices.
+
 Launch the standalone window and test voice playback in Deadlock after release
 changes. Automated file checks do not establish that every voice line has been
 listened to in-game.

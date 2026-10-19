@@ -26,10 +26,12 @@ $outputDirectory = Join-Path $appWorkspace ('builds/' + $OutputName)
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $env:CARGO_TARGET_DIR 'release/deadlock-dubbing.exe') -Destination (Join-Path $outputDirectory 'DeadVox.exe') -Force
 Copy-Item -LiteralPath (Join-Path $appWorkspace 'docs/PORTABLE-README.txt') -Destination (Join-Path $outputDirectory 'README.txt') -Force
+Copy-Item -LiteralPath (Join-Path $appWorkspace 'docs/THIRD-PARTY-NOTICES.txt') -Destination (Join-Path $outputDirectory 'THIRD-PARTY-NOTICES.txt') -Force
 $receipt = [ordered]@{
     version = (Get-Content -Raw -LiteralPath (Join-Path $appWorkspace 'app/package.json') | ConvertFrom-Json).version
     executable_sha256 = (Get-FileHash -LiteralPath (Join-Path $outputDirectory 'DeadVox.exe')).Hash.ToLowerInvariant()
     update_source_sha256 = (Get-FileHash -LiteralPath (Join-Path $appWorkspace 'app/src-tauri/resources/update-source.json')).Hash.ToLowerInvariant()
+    third_party_notices_sha256 = (Get-FileHash -LiteralPath (Join-Path $outputDirectory 'THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant()
 }
 $receipt | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $appWorkspace 'builds/build-receipt.json') -Encoding utf8
 if ($WithVoicePack) {

@@ -1,12 +1,14 @@
 # 0.1.0-alpha.5
 
+- Third-party notices embedded in About and included beside the portable executable.
+- Clean portable preparation excludes user settings/backups and verifies copied files.
 - Multiple independently versioned character packs in one PT-BR catalog, ready for the full game roster.
 - Verified downloads skip complete files and preserve completed characters across interrupted attempts.
 - A new catalog becomes installed only after every pack passes size and SHA-256 checks.
 - Separate immutable character mounts and reversible Original/PT-BR selection; old packages are retained.
 - Voice deployment remains separate from launcher deployment, with compatibility checks for older clients.
 - Repaired local release preparation and added a build receipt to prevent distributing a client with an outdated embedded source.
-- Public download repository remains unset; no upload, DNS change, or ZIP was performed.
+- Official download repository: pedrommartini/deadvox-downloads, separate from private launcher source.
 - Lady Geist audio and its independent version remain unchanged.
 
 # 0.1.0-alpha.4

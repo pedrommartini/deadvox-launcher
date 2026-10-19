@@ -8,7 +8,8 @@ DeadVox - pre-alpha 0.1.0-alpha.5
 Keep voice-packs beside the executable. If your release contains only the
 launcher, the PT-BR VPK must be installed in the matching voice-packs folder.
 Updates for voices and launcher versions use the official release channel,
-fixed by the developer. No online channel is configured in this local build yet.
+fixed by the developer: github.com/pedrommartini/deadvox-downloads.
+The online channels must be published before public distribution.
 Use Settings to choose a game folder if Steam auto-detection cannot find it.
 During operations, the Play button shows progress and window closing is blocked.
 
@@ -21,3 +22,5 @@ After a Steam verification/update, select PT-BR again with the game closed.
 
 Hero portraits: Valve, via Deadlock API.
 Independent community project, not affiliated with Valve.
+Third-party licenses are available in About > Third-party notices and in
+THIRD-PARTY-NOTICES.txt beside the executable.

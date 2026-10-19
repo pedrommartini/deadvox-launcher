@@ -6,6 +6,10 @@ character-by-character voice packs and a dedicated Windows launcher.
 offers Original and PT-BR audio, hero portraits, voice-pack coverage and a
 Play Deadlock button. Current client version: `0.1.0-alpha.5`.
 
+Private source repository: `pedrommartini/deadvox-launcher`. This repository is
+not the public download channel. The separate official download-only repository
+is `pedrommartini/deadvox-downloads`.
+
 The launcher is implemented in Tauri 2, Rust and React/TypeScript. It detects
 Steam libraries, verifies finished voice packs and reversibly activates them.
 It runs without Python, a local web server, or access to a production workspace.
@@ -66,7 +70,8 @@ dialog, verified downloads and progress inside the Play Deadlock button.
 The developer sets the official download repository in
 `app/src-tauri/resources/update-source.json` before building for distribution.
 Users cannot change the update source through Settings, native commands or saved
-configuration. The repository is not configured yet. Local packs continue working offline.
+configuration. The official repository is `pedrommartini/deadvox-downloads`;
+live channels must be published and verified before distribution. Local packs continue working offline.
 Settings also provides a native folder chooser and Steam auto-detection.
 
 See [update delivery](docs/UPDATES.md) for the separate client and voice channels
@@ -77,3 +82,17 @@ only missing or changed character files, and commits a new catalog after all fil
 pass integrity checks. Voice delivery remains separate from client delivery.
 
 See [testing](docs/TESTING.md) and [release notes](RELEASE-NOTES.md).
+
+Third-party notices are generated from the locked Windows dependencies and
+frontend production dependencies during the build, embedded in About, and copied
+beside the executable. Missing upstream license files are supplemented from
+their exact source revisions. Before sharing a portable folder, create a clean
+copy rather than copying a development or previously used folder:
+
+```powershell
+./scripts/prepare-portable.ps1 -ReleaseName alpha.5-candidate -WithVoicePack
+```
+
+This writes `builds/distribution/alpha.5-candidate`, refuses to replace an existing
+folder, verifies the copied files and excludes saved settings/backups. It does
+not publish or create a ZIP. Use `-BuildName` when building into a custom folder.

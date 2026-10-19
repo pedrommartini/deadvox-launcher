@@ -40,11 +40,15 @@
 !scripts/audit-publication.ps1
 !scripts/verify-portable.ps1
 !scripts/prepare-release.ps1
+!scripts/prepare-portable.ps1
+!scripts/third-party-notices.mjs
 !docs/
 !docs/public-pack-contract.md
 !docs/TESTING.md
 !docs/PORTABLE-README.txt
 !docs/UPDATES.md
+!docs/THIRD-PARTY-NOTICES.txt
+!docs/third-party-license-overrides.json
 !.github/
 !.github/workflows/
 !.github/workflows/windows.yml
