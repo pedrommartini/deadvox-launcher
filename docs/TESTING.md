@@ -53,3 +53,21 @@ also deliver their applicable notices.
 Launch the standalone window and test voice playback in Deadlock after release
 changes. Automated file checks do not establish that every voice line has been
 listened to in-game.
+
+## Release candidate checked on 2026-10-18
+
+The compiled alpha.5 candidate was copied to a clean writable folder and checked
+with the native diagnostic commands. The executable matches its build receipt
+and embeds `pedrommartini/deadvox-downloads`. Without a local VPK, public coverage
+remains visible while installation is unavailable. After copying the verified
+Lady Geist VPK, the native status detects it correctly. Read-only status and
+update checks preserved the game configuration hash and selected voice language;
+the game was not launched and voices were not switched.
+
+The exact portable distribution passed the distribution allowlist with four
+files and no local settings/backups. Both client and voice delivery manifests
+passed the private local bundle validator. The official online channels returned
+404 because no releases have been published. This establishes correct source
+embedding and error reporting; it does not validate live download, activation or
+client replacement through the official release channel. Complete that flow
+after the initial release is authorized and the launch content is ready.

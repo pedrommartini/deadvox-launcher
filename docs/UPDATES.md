@@ -22,7 +22,7 @@ game settings and retains the downloaded packages. Multi-pack catalogs require
 ./scripts/prepare-release.ps1 -Kind voices -Repository OWNER/REPOSITORY
 ```
 
-Use the real repository when it has been chosen. Preparation creates separate
+The official download repository is `pedrommartini/deadvox-downloads`, configured on 2026-10-18. Preparation creates separate
 folders under `builds/deploy/client/VERSION` and
 `builds/deploy/voices/pt-BR/catalog-TIMESTAMP`. The script verifies the delivered files and
 constructs public metadata from explicit fields. It never uploads anything.
