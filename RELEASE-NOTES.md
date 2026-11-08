@@ -1,5 +1,21 @@
+# 0.1.0-beta.2
+
+- Brazilian Portuguese interface for the launcher and Windows installer.
+- First-run interface locale detection with PT-BR as the default.
+- Roadmap previews play only versions tied to verified human selections.
+- Pix contribution flow and verified red-accent QR code.
+- Public launcher source is available under the MIT License; the voice-production workspace remains private.
+
+# 0.1.0-beta.1
+
+- First beta candidate with the character roadmap and four local PT-BR packs.
+- Launcher and voice updates remain separate; application updates require confirmation.
+- Original voices and non-speech performances remain in the game.
+
 # 0.1.0-alpha.5
 
+- PT-BR mounts take priority over Deadlock Mod Manager addons; launching through
+  DeadVox restores that priority after configuration changes, respecting Original.
 - Third-party notices embedded in About and included beside the portable executable.
 - Clean portable preparation excludes user settings/backups and verifies copied files.
 - Multiple independently versioned character packs in one PT-BR catalog, ready for the full game roster.

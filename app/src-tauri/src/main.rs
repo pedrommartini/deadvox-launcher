@@ -5,6 +5,7 @@ mod game;
 mod install;
 mod packs;
 mod progress;
+mod roadmap;
 mod syntax;
 mod updates;
 
@@ -46,6 +47,12 @@ async fn launcher_action(
     })
     .await
     .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
+async fn roadmap_audio(character: String, dubbed: bool) -> Result<Vec<u8>, String> {
+    tauri::async_runtime::spawn_blocking(move || roadmap::sample(&character, dubbed))
+        .await.map_err(|e| e.to_string())?
 }
 
 #[tauri::command]
@@ -108,7 +115,7 @@ fn main() {
                 }
             }
         })
-        .invoke_handler(tauri::generate_handler![launcher_action, set_theme_icon])
+        .invoke_handler(tauri::generate_handler![launcher_action, set_theme_icon, roadmap_audio])
         .build(tauri::generate_context!())
         .expect("Unable to start DeadVox")
         .run(|app, event| {

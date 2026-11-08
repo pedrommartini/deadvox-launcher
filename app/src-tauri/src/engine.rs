@@ -59,6 +59,7 @@ pub struct Hero {
 #[derive(Serialize)]
 pub struct Snapshot {
     pub language: String,
+    pub ui_language: String,
     pub game_running: bool,
     pub game_root: Option<String>,
     pub game_error: Option<String>,
@@ -74,6 +75,15 @@ pub struct Snapshot {
     updated_at: String,
     version: String,
     portraits_source: String,
+}
+
+fn ui_language(data: &Path) -> String {
+    fs::read_to_string(data.join("ui-language.json"))
+        .ok()
+        .and_then(|value| serde_json::from_str::<serde_json::Value>(&value).ok())
+        .and_then(|value| value.get("language")?.as_str().map(str::to_owned))
+        .filter(|language| language == "pt-BR")
+        .unwrap_or_else(|| "pt-BR".into())
 }
 
 pub fn catalog() -> Result<PackCatalog, String> {
@@ -247,6 +257,9 @@ pub fn action_with_progress(
             "enable" | "download_voices" => packs::enable(root, game_root, data, &catalog, report)?,
             "disable" => packs::disable(game_root, data, &catalog, report)?,
             "play" => {
+                if !game::running()? {
+                    packs::ensure_priority(root, game_root, data, &catalog, report)?;
+                }
                 report("Starting Deadlock", None);
                 game::play()?;
             }
@@ -357,6 +370,7 @@ pub fn action_with_progress(
     });
     Ok(Snapshot {
         language: language.into(),
+        ui_language: ui_language(data),
         game_running: game::running()?,
         game_root: detected.as_ref().ok().map(|p| {
             p.to_string_lossy()
@@ -429,21 +443,17 @@ mod tests {
             action_with_progress("status", &root, &data, None, &crate::progress::quiet).unwrap();
         assert!(!snapshot.pack_available);
         assert_eq!(snapshot.language, "en");
-        let geist = snapshot
-            .heroes
-            .iter()
-            .find(|hero| hero.asset_id == "ghost")
-            .unwrap();
-        assert_eq!(geist.content_available, 1835);
-        assert_eq!(geist.available, 0);
-        assert_eq!(geist.state, "not-started");
-        assert!(
-            snapshot
-                .heroes
-                .iter()
-                .filter(|hero| hero.asset_id != "ghost")
-                .all(|hero| hero.content_available == 0)
-        );
+        let catalog = catalog().unwrap();
+        for hero in &snapshot.heroes {
+            let expected = catalog.packs.iter().flat_map(|pack| &pack.heroes)
+                .find(|entry| entry.asset_id == hero.asset_id);
+            assert_eq!(hero.content_available, expected.map_or(0, |entry| entry.available));
+            assert_eq!(hero.total, expected.map_or(0, |entry| entry.total));
+            assert_eq!(hero.available, 0);
+            assert_eq!(hero.state, "not-started");
+        }
+        let urn = snapshot.heroes.iter().find(|hero| hero.asset_id == "spirit_jar").unwrap();
+        assert!(urn.content_available > 0 && urn.content_available <= urn.total);
         fs::remove_dir_all(root).unwrap();
     }
 }

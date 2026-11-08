@@ -15,6 +15,7 @@ export interface Hero {
 
 export interface Snapshot {
   language: Language;
+  ui_language: 'pt-BR';
   game_running: boolean;
   game_root: string | null;
   game_error: string | null;

@@ -586,6 +586,7 @@ mod tests {
             std::env::temp_dir().join(format!("deadvox-batch-download-{}", install::stamp()));
         let data = root.join("user-data");
         let mut installed = crate::engine::catalog().unwrap();
+        installed.packs.truncate(1);
         let old = &mut installed.packs[0];
         old.bytes = 8;
         old.sha256 = format!("{:x}", Sha256::digest(b"old-pack"));

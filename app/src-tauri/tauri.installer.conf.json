@@ -1,0 +1,25 @@
+{
+  "mainBinaryName": "DeadVox",
+  "bundle": {
+    "active": true,
+    "useLocalToolsDir": true,
+    "targets": ["nsis"],
+    "resources": {
+      "../../docs/PORTABLE-README.txt": "README.txt",
+      "../../docs/THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.txt"
+    },
+    "windows": {
+      "allowDowngrades": false,
+      "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true },
+      "nsis": {
+        "template": "../../installer/deadvox.nsi",
+        "installerHooks": "../../installer/hooks.nsh",
+        "sidebarImage": "../../installer/deadvox-wordmark.bmp",
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico",
+        "installMode": "currentUser",
+        "languages": ["PortugueseBR"]
+      }
+    }
+  }
+}

@@ -4,11 +4,12 @@ An independent community dubbing platform for Deadlock, built around
 character-by-character voice packs and a dedicated Windows launcher.
 **AI Assisted • Human Directed.** The dark interface
 offers Original and PT-BR audio, hero portraits, voice-pack coverage and a
-Play Deadlock button. Current client version: `0.1.0-alpha.5`.
+Play Deadlock button. Current client version: `0.1.0-beta.2`.
 
-Private source repository: `pedrommartini/deadvox-launcher`. This repository is
-not the public download channel. The separate official download-only repository
-is `pedrommartini/deadvox-downloads`.
+The launcher and installer source are available under the MIT License in
+`pedrommartini/deadvox-launcher`. This repository is not the public download
+channel. The separate official download-only repository is
+`pedrommartini/deadvox-downloads`.
 
 The launcher is implemented in Tauri 2, Rust and React/TypeScript. It detects
 Steam libraries, verifies finished voice packs and reversibly activates them.
@@ -19,12 +20,13 @@ It runs without Python, a local web server, or access to a production workspace.
 Open `builds/pre-alpha/DeadVox.exe` from the local writable build folder.
 Keep the `voice-packs` folder beside the executable.
 Close Deadlock before switching between Original and PT-BR. Start the game with
-Play Deadlock. After a Steam update restores the game's configuration, select
-PT-BR again with the game closed.
+Play Deadlock. PT-BR takes priority over Deadlock Mod Manager addons. Before
+starting the game, DeadVox restores the selected PT-BR mounts and their priority
+if Steam or the mod manager changed them. Original selection remains respected.
 
-The current local build includes Lady Geist: 1,835 PT-BR speech lines. Original
-sounds and creative performances remain preserved. Other heroes appear in the
-catalog, but do not yet have an available voice pack in this release.
+The local packs include Lady Geist (1,835 speech lines), Archmother (898),
+Hidden King (880), and The Urn (341). Original sounds and creative performances remain preserved.
+Other heroes appear in the catalog but do not yet have an available voice pack.
 
 Windows x64, Steam, Deadlock and the WebView2 runtime are required. Saved settings
 and backups are placed in `user-data` beside the executable and are not part of
@@ -48,14 +50,15 @@ directory:
 
 Outputs are in `builds/pre-alpha`; no ZIP is generated and nothing is published.
 Build dependencies and caches
-stay under `.cache`; `app/node_modules` contains frontend dependencies. The private source Git
+stay under `.cache`; `app/node_modules` contains frontend dependencies. The source
 allowlist permits only application source, public portraits, public metadata and
 documentation. Executables, audio packs, saved settings and build caches are
-excluded from the source repository. Finished binaries and voice packs can later
-be distributed as GitHub release assets from a separate download-only repository.
-The launcher source remains private; do not publish this development folder.
-Public releases contain compiled application files, required third-party notices,
-user documentation and finished packs, not application source or build scripts.
+excluded from the source repository. Finished binaries and voice packs are
+distributed as GitHub release assets from a separate download-only repository.
+The internal dubbing workspace is not part of this repository: it contains voice
+generation, models, references, review data, production queues, audio sources and
+credentials. Public releases contain compiled application files, required
+third-party notices, user documentation and finished packs.
 
 ## Public pack contract
 

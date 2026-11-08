@@ -9,12 +9,16 @@ export async function setThemeIcon(theme: 'dark' | 'light'): Promise<void> {
   if (desktop) await invoke('set_theme_icon', { theme });
 }
 
+export async function roadmapAudio(character: string, dubbed: boolean): Promise<number[]> {
+  return invoke<number[]>('roadmap_audio', { character, dubbed });
+}
+
 export async function action(name: Action, options?: { gamePath?: string }): Promise<Snapshot> {
   if (desktop) return invoke<Snapshot>('launcher_action', { action: name, ...options });
-  if (name !== 'status') throw new Error('Open the desktop launcher to change the voice language or launch Deadlock.');
+  if (name !== 'status') throw new Error('Abra o launcher para desktop para alterar o idioma das vozes ou iniciar Deadlock.');
   return {
-    language: 'en', game_running: false, game_root: null, game_error: null,
-    pack_available: false, version: '0.1.0-alpha.5', updated_at: new Date().toISOString(),
+    language: 'en', ui_language: 'pt-BR', game_running: false, game_root: null, game_error: null,
+    pack_available: false, version: '0.1.0-beta.2', updated_at: new Date().toISOString(),
     pack_version: catalog.packs[0].version, pack_download_available: false,
     voices_pending_application: false, update_repository: null, update_error: null,
     client_update: null, voice_update: null,
@@ -27,6 +31,6 @@ export async function action(name: Action, options?: { gamePath?: string }): Pro
         state: available && available === total ? 'complete' : available ? 'partial' : 'not-started',
         coverage: total ? 100 * available / total : null,
       };
-    }).sort((a, b) => Number(a.content_available === 0) - Number(b.content_available === 0) || a.name.localeCompare(b.name, 'en')),
+    }).sort((a, b) => Number(a.content_available === 0) - Number(b.content_available === 0) || a.name.localeCompare(b.name, 'pt-BR')),
   };
 }

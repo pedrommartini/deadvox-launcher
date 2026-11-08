@@ -1,8 +1,9 @@
-# Private development repository only. Never publish this source tree.
-# Deny by default; explicitly allow application source without production data.
+# Public launcher source only. Deny by default and explicitly allow application
+# code without production data, models, audio, credentials or internal tooling.
 *
 !.gitignore
 !README.md
+!LICENSE
 !RELEASE-NOTES.md
 !app/
 !app/src/
@@ -35,6 +36,16 @@
 !app/src-tauri/Cargo.lock
 !app/src-tauri/build.rs
 !app/src-tauri/tauri.conf.json
+!app/src-tauri/tauri.installer.conf.json
+!installer/
+!installer/deadvox.nsi
+!installer/tauri-nsis-upstream.nsi
+!installer/hooks.nsh
+!installer/deadvox-wordmark.bmp
+!installer/Setup.cs
+!installer/Setup.xaml
+!installer/Setup.manifest
+!scripts/build-setup.ps1
 !scripts/
 !scripts/build.ps1
 !scripts/audit-publication.ps1

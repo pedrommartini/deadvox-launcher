@@ -3,6 +3,22 @@
   "credit": "Hero portraits by Valve, provided by Deadlock API.",
   "updated_at": "2026-10-04T21:14:44.687355+00:00",
   "heroes": [
+    { "id": 900003, "name": "The Urn", "asset_id": "spirit_jar", "portrait": "/assets/roadmap/portrait-3.webp", "portrait_source": "DeadVox" },
+    { "id": 900004, "name": "The Shopkeeper", "asset_id": "shopkeeper", "portrait": "/assets/roadmap/portrait-4.webp", "portrait_source": "DeadVox" },
+    {
+      "id": 900002,
+      "name": "Hidden King",
+      "asset_id": "hidden_king",
+      "portrait": "/assets/brand/deadvox-wordmark.png",
+      "portrait_source": "DeadVox"
+    },
+    {
+      "id": 900001,
+      "name": "Archmother",
+      "asset_id": "announcer",
+      "portrait": "/assets/brand/deadvox-wordmark.png",
+      "portrait_source": "DeadVox"
+    },
     {
       "id": 6,
       "name": "Abrams",

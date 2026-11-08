@@ -3,7 +3,11 @@ $ErrorActionPreference = 'Stop'
 $appWorkspace = Split-Path -Parent $PSScriptRoot
 $sourceFiles = & git -C $appWorkspace ls-files --cached --others --exclude-standard
 if ($LASTEXITCODE -ne 0) { throw 'Initialize the local application repository before auditing publication.' }
-$allowed = @('^\.gitignore$','^README\.md$','^RELEASE-NOTES\.md$','^app/src/[^/]+\.(ts|tsx|css)$','^app/public/assets/heroes\.json$','^app/public/assets/brand/(deadvox-wordmark|deadvox-icon)\.png$','^app/public/assets/support/(curiosity-shop-support|support-characters-v2)\.png$','^app/public/assets/heroes/\d+\.(webp|png)$','^app/(index\.html|package(-lock)?\.json|tsconfig\.json|vite\.config\.ts)$','^app/src-tauri/src/[^/]+\.rs$','^app/src-tauri/(Cargo\.(toml|lock)|build\.rs|tauri\.conf\.json)$','^app/src-tauri/resources/(voice-packs|update-source)\.json$','^app/src-tauri/capabilities/default\.json$','^app/src-tauri/icons/[^/]+\.(ico|png|icns)$','^scripts/(build|audit-publication|verify-portable|prepare-release|prepare-portable)\.ps1$','^scripts/third-party-notices\.mjs$','^docs/THIRD-PARTY-NOTICES\.txt$','^docs/third-party-license-overrides\.json$','^docs/(public-pack-contract\.md|TESTING\.md|PORTABLE-README\.txt|UPDATES\.md)$','^\.github/workflows/windows\.yml$')
+$allowed = @('^\.gitignore$','^README\.md$','^RELEASE-NOTES\.md$','^app/src/[^/]+\.(ts|tsx|css)$','^app/public/assets/heroes\.json$','^app/public/assets/roadmap/portrait-[0-6]\.webp$','^app/public/assets/brand/(deadvox-wordmark|deadvox-icon)\.png$','^app/public/assets/support/(curiosity-shop-support|support-characters-v2)\.png$','^app/public/assets/heroes/\d+\.(webp|png)$','^app/(index\.html|package(-lock)?\.json|tsconfig\.json|vite\.config\.ts)$','^app/src-tauri/src/[^/]+\.rs$','^app/src-tauri/(Cargo\.(toml|lock)|build\.rs|tauri\.conf\.json)$','^app/src-tauri/resources/(voice-packs|update-source)\.json$','^app/src-tauri/capabilities/default\.json$','^app/src-tauri/icons/[^/]+\.(ico|png|icns)$','^scripts/(build|audit-publication|verify-portable|prepare-release|prepare-portable)\.ps1$','^scripts/third-party-notices\.mjs$','^docs/THIRD-PARTY-NOTICES\.txt$','^docs/third-party-license-overrides\.json$','^docs/(public-pack-contract\.md|TESTING\.md|PORTABLE-README\.txt|UPDATES\.md)$','^\.github/workflows/windows\.yml$')
+$allowed += @('^app/src-tauri/tauri\.installer\.conf\.json$','^installer/(deadvox|tauri-nsis-upstream)\.nsi$','^installer/hooks\.nsh$','^installer/deadvox-wordmark\.bmp$')
+$allowed += @('^installer/Setup\.(cs|xaml|manifest)$','^scripts/build-setup\.ps1$')
+$allowed += @('^app/public/assets/support/contribution-qr\.png$')
+$allowed += @('^LICENSE$')
 foreach ($file in $sourceFiles) {
     if (!($allowed | Where-Object { $file -match $_ })) { throw "Unexpected repository file: $file" }
 }
@@ -33,4 +37,4 @@ foreach ($pack in $catalog.packs) {
 }
 $result = [ordered]@{ source_file_count = @($sourceFiles).Count; source_allowlist_passed = $true; portable_folder = $portableRoot; release_files = $entries; release_allowlist_passed = $true; local_runtime_files_excluded = $localRuntimeFiles; remove_user_data_before_external_distribution = ($localRuntimeFiles.Count -gt 0) }
 $result | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $appWorkspace 'builds/publication-audit.json') -Encoding utf8
-Write-Host "Allowlist passed: $(@($sourceFiles).Count) private source files, $($entries.Count) distribution files. Never publish the source tree. No ZIP or publication."
+Write-Host "Allowlist passed: $(@($sourceFiles).Count) public launcher source files, $($entries.Count) distribution files. Production data remains excluded."

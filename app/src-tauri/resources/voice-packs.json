@@ -17,6 +17,74 @@
         }
       ],
       "download_url": null
+    },
+    {
+      "id": "pt-br-archmother",
+      "language": "pt-BR",
+      "version": "0.1.0-alpha.1",
+      "file": "voice-packs/pt-BR/pt-br-archmother-0.1.0-alpha.1_dir.vpk",
+      "sha256": "90d5d82626053d78ba74b17dccc1e8d576fbb216e90a9074955231008eafdbf4",
+      "bytes": 277599757,
+      "entry_count": 898,
+      "heroes": [
+        {
+          "asset_id": "announcer",
+          "total": 898,
+          "available": 898
+        }
+      ],
+      "download_url": null
+    },
+    {
+      "id": "pt-br-hidden-king",
+      "language": "pt-BR",
+      "version": "0.1.0-alpha.1",
+      "file": "voice-packs/pt-BR/pt-br-hidden-king-0.1.0-alpha.1_dir.vpk",
+      "sha256": "9c2c87e716aed3297e82b33ee5924aed86496d4d388deb6fde253d1e425af258",
+      "bytes": 265308358,
+      "entry_count": 880,
+      "heroes": [
+        {
+          "asset_id": "hidden_king",
+          "total": 880,
+          "available": 880
+        }
+      ],
+      "download_url": null
+    },
+    {
+      "id": "pt-br-the-urn",
+      "language": "pt-BR",
+      "version": "0.1.0-alpha.2",
+      "file": "voice-packs/pt-BR/pt-br-the-urn-0.1.0-alpha.2_dir.vpk",
+      "sha256": "e54fa732e12c0d87b7526b8f9e7e1cbfa2471c74015c6d9c9cb64e0ecdddeac7",
+      "bytes": 68743477,
+      "entry_count": 341,
+      "heroes": [
+        {
+          "asset_id": "spirit_jar",
+          "total": 341,
+          "available": 341
+        }
+      ],
+      "download_url": null
+    },
+    {
+      "id": "pt-br-the-shopkeeper",
+      "language": "pt-BR",
+      "version": "0.1.0-alpha.1",
+      "file": "voice-packs/pt-BR/pt-br-the-shopkeeper-0.1.0-alpha.1_dir.vpk",
+      "sha256": "230888b8a48eb542de0720bcd2f79b3fbdad4245ef5168fb0a3b27a025be9673",
+      "bytes": 81215864,
+      "entry_count": 534,
+      "heroes": [
+        {
+          "asset_id": "shopkeeper",
+          "total": 531,
+          "available": 531
+        }
+      ],
+      "download_url": null
     }
   ]
 }

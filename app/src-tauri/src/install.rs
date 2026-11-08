@@ -130,22 +130,24 @@ pub fn patch(text: &str) -> Result<String, String> {
     let mut position = start;
     let mut insertion = None;
     let mut core = false;
+    let mut citadel = false;
     for line in text[start..end].split_inclusive('\n') {
         let mut fields = line.split_whitespace();
         if fields.next() == Some("Game") {
+            // DMM can mount addons before citadel, including old voice packs.
+            // Our block must precede all ordinary Game paths without reordering them.
+            if insertion.is_none() {
+                insertion = Some((position, &line[..line.len() - line.trim_start().len()]));
+            }
             match fields.next().map(|s| s.trim_matches('"')) {
                 Some("core") => core = true,
-                Some("citadel") => {
-                    if insertion.is_none() {
-                        insertion = Some((position, &line[..line.len() - line.trim_start().len()]));
-                    }
-                }
+                Some("citadel") => citadel = true,
                 _ => {}
             }
         }
         position += line.len();
     }
-    if !core || insertion.is_none() {
+    if !core || !citadel || insertion.is_none() {
         return Err("Deadlock configuration is outdated. Open the vanilla game or verify it in Steam first.".into());
     }
     let (position, indent) = insertion.unwrap();
@@ -212,6 +214,7 @@ pub struct State {
     pub game_root: Option<PathBuf>,
     pub backups: Vec<PathBuf>,
     pub mounted_packs: std::collections::BTreeMap<String, String>,
+    pub voices_enabled: Option<bool>,
     // Accept obsolete local settings without ever using or writing an override.
     #[serde(rename = "update_repository", skip_serializing)]
     pub _legacy_update_repository: Option<serde_json::Value>,
@@ -391,6 +394,7 @@ pub fn enable_with_progress(
     }
     state.version = 1;
     state.package_sha256 = Some(expected.into());
+    state.voices_enabled = Some(true);
     state.game_root = Some(game_root.into());
     if let Err(error) = save_state(data, &state) {
         write_atomic(&info, text.as_bytes())
@@ -462,6 +466,7 @@ pub fn disable_with_progress(
         .clone()
         .or(disabled_hash.clone())
         .or(state.package_sha256);
+    state.voices_enabled = Some(false);
     state.game_root = Some(game_root.into());
     report("Saving voice language", Some(95.0));
     if let Err(error) = save_state(data, &state) {
@@ -497,6 +502,29 @@ mod tests {
                     < patched.find("citadel/custom").unwrap()
             );
         }
+    }
+    #[test]
+    fn dmm_addons_follow_voice_mounts_without_changing_other_paths() {
+        let dmm = vanilla().replace(
+            "  Game citadel\n",
+            "  // Deadlock Mod Manager - Start\n  Game \"citadel/addons\"\n  Mod citadel\n  Write citadel\n  Game citadel\n",
+        );
+        for original in [dmm.clone(), dmm.replace('\n', "\r\n")] {
+            let mounts = vec!["citadel/dubbing_ptbr/packs/test/abcd".into()];
+            for patched in [
+                patch(&original).unwrap(),
+                patch_mounts(&original, &mounts).unwrap(),
+            ] {
+                assert!(
+                    patched.find("citadel/dubbing_ptbr").unwrap()
+                        < patched.find("citadel/addons").unwrap()
+                );
+                assert_eq!(restore(&patched).unwrap(), original);
+            }
+            let patched = patch_mounts(&original, &mounts).unwrap();
+            assert_eq!(patch_mounts(&patched, &mounts).unwrap(), patched);
+        }
+        assert!(patch(&dmm.replace("  Game citadel\n", "")).is_err());
     }
     #[test]
     fn legacy_block_is_adopted_without_duplicating_mounts() {

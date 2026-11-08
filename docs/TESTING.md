@@ -4,6 +4,11 @@ Native tests cover Steam configuration parsing, reversible game configuration
 changes, legacy configuration migration, file ownership, package integrity and
 voice selection. `scripts/build.ps1` runs these before building the executable.
 
+Priority checks cover DMM addons before base-game paths, LF/CRLF preservation,
+recovery after removed or demoted PT-BR mounts, migration of active older states,
+Original preference persistence and rollback if saving that preference fails.
+Recovery runs before Play Deadlock while the game is closed; status stays read-only.
+
 Alpha.5 additionally tests independent character mounts, exact restoration of
 Original, corrupt/missing character rejection, metadata-commit rollback, retention
 of old versioned packages, interrupted multi-pack downloads and reuse of completed
