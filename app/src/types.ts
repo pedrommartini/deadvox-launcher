@@ -35,4 +35,4 @@ export interface Snapshot {
 
 export interface UpdateSummary { version: string; bytes: number }
 export interface OperationProgress { phase: string; percent: number | null }
-export type Action = 'status' | 'enable' | 'disable' | 'play' | 'set_game_folder' | 'auto_game_folder' | 'check_updates' | 'download_voices' | 'update_client';
+export type Action = 'status' | 'enable' | 'disable' | 'play' | 'set_game_folder' | 'auto_game_folder' | 'check_updates' | 'download_voices' | 'delete_voices' | 'update_client';

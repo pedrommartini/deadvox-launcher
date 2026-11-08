@@ -18,7 +18,7 @@ export async function action(name: Action, options?: { gamePath?: string }): Pro
   if (name !== 'status') throw new Error('Abra o launcher para desktop para alterar o idioma das vozes ou iniciar Deadlock.');
   return {
     language: 'en', ui_language: 'pt-BR', game_running: false, game_root: null, game_error: null,
-    pack_available: false, version: '0.1.0-beta.2', updated_at: new Date().toISOString(),
+    pack_available: false, version: '0.1.0-beta.3', updated_at: new Date().toISOString(),
     pack_version: catalog.packs[0].version, pack_download_available: false,
     voices_pending_application: false, update_repository: null, update_error: null,
     client_update: null, voice_update: null,

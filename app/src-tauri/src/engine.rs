@@ -209,6 +209,7 @@ pub fn action_with_progress(
             | "auto_game_folder"
             | "check_updates"
             | "download_voices"
+            | "delete_voices"
             | "update_client"
     ) {
         return Err("Unsupported launcher action.".into());
@@ -236,6 +237,7 @@ pub fn action_with_progress(
         updates::check(data, report)?;
     }
     if action == "download_voices" {
+        if game::running()? { return Err("Feche o Deadlock antes de baixar e aplicar as vozes.".into()); }
         updates::voices(root, data, report)?;
     }
     if action == "update_client" {
@@ -245,17 +247,12 @@ pub fn action_with_progress(
     let pack = &catalog.packs[0];
     let state = install::load_state(data)?;
     let detected = game::discover(state.game_root.as_deref());
-    let was_mounted = detected.as_ref().is_ok_and(|game_root| {
-        fs::read_to_string(game_root.join("game/citadel/gameinfo.gi"))
-            .is_ok_and(|text| install::has_block(&text))
-    });
-    if matches!(action, "enable" | "disable" | "play")
-        || (action == "download_voices" && was_mounted && !game::running()?)
-    {
+    if matches!(action, "enable" | "disable" | "play" | "download_voices" | "delete_voices") {
         let game_root = detected.as_ref().map_err(Clone::clone)?;
         match action {
             "enable" | "download_voices" => packs::enable(root, game_root, data, &catalog, report)?,
             "disable" => packs::disable(game_root, data, &catalog, report)?,
+            "delete_voices" => packs::remove(root, game_root, data, &catalog, report)?,
             "play" => {
                 if !game::running()? {
                     packs::ensure_priority(root, game_root, data, &catalog, report)?;

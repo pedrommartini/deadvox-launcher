@@ -1,3 +1,10 @@
+# 0.1.0-beta.3
+
+- A Windows installer lets players choose the installation folder and registers DeadVox as an installed application.
+- Downloaded PT-BR voices are applied automatically, followed by the contribution screen. Close Deadlock before applying them.
+- Players can remove the downloaded current voice packs and return to original voices.
+- Launcher progress descriptions are localized in Brazilian Portuguese.
+
 # 0.1.0-beta.2
 
 - Brazilian Portuguese interface for the launcher and Windows installer.

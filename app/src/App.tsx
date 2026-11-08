@@ -24,6 +24,17 @@ const languageName: Record<Language, string> = {
   'pt-BR': 'Português (Brasil)',
 };
 type Theme = 'dark' | 'light';
+const phases: Record<string, string> = {
+  'Locating Deadlock': 'Localizando Deadlock', 'Starting Deadlock': 'Iniciando Deadlock',
+  'Reading voice settings': 'Lendo configurações de voz', 'Checking voice pack': 'Verificando pacote de vozes',
+  'Backing up game settings': 'Salvando configurações do jogo', 'Verifying installed voices': 'Verificando vozes instaladas',
+  'Saving voice language': 'Salvando idioma das vozes', 'Checking original voices': 'Verificando vozes originais',
+  'Restoring original voices': 'Restaurando vozes originais', 'Checking launcher updates': 'Verificando atualizações do launcher',
+  'Checking voice updates': 'Verificando atualizações de vozes', 'Downloading': 'Baixando', 'Verifying download': 'Verificando download',
+  'Saving voice catalog': 'Salvando catálogo de vozes', 'Preparing restart': 'Preparando reinicialização',
+  'Applying character voices': 'Aplicando vozes dos personagens', 'Restoring voice priority': 'Restaurando prioridade das vozes',
+  'Applying PT-BR': 'Aplicando vozes PT-BR',
+};
 
 function ThirdPartyNotices() {
   const [text, setText] = useState('Carregando avisos de terceiros…');
@@ -130,7 +141,7 @@ export default function App() {
     let disposed = false;
     const cleanup: Array<() => void> = [];
     void listen<OperationProgress>('operation-progress', event => {
-      if (operation.current) setProgress(event.payload);
+      if (operation.current) setProgress({ ...event.payload, phase: phases[event.payload.phase] ?? event.payload.phase });
     }).then(unlisten => { if (disposed) unlisten(); else cleanup.push(unlisten); });
     void listen<string>('close-blocked', event => setNote(event.payload)).then(unlisten => { if (disposed) unlisten(); else cleanup.push(unlisten); });
     return () => { disposed = true; cleanup.forEach(unlisten => unlisten()); };
@@ -153,10 +164,11 @@ export default function App() {
         play: 'Iniciando Deadlock pelo Steam…', enable: 'PT-BR selecionado.', disable: 'Vozes originais selecionadas.',
         set_game_folder: 'Pasta do jogo verificada.', auto_game_folder: 'Bibliotecas do Steam verificadas.',
         download_voices: result.voices_pending_application ? 'Vozes baixadas. Feche Deadlock e aplique a atualização.' : 'Vozes PT-BR baixadas e verificadas.',
+        delete_voices: 'Vozes baixadas removidas. Vozes originais selecionadas.',
         update_client: 'Atualização baixada. Reiniciando o launcher…',
         check_updates: result.update_error ?? (result.client_update || result.voice_update ? 'Há atualizações disponíveis.' : result.update_repository ? 'Nenhuma versão mais recente encontrada.' : 'Atualizações online ainda não estão disponíveis nesta versão.'),
       };
-      if (name === 'enable' || name === 'disable') { setNote(''); setLanguageConfirmation(result.language); }
+      if (name === 'enable' || name === 'disable' || name === 'download_voices') { setNote(''); setLanguageConfirmation(result.language); }
       else setNote(messages[name] ?? 'Concluído.');
       if (name === 'update_client' && desktop) await getCurrentWindow().close();
     } catch (e) { setError(String(e)); }
@@ -226,6 +238,7 @@ export default function App() {
             <div className="language-title"><h2>{languageLabel[language]}</h2><button className="edit-button" aria-label={`Ver ${languageName[language]}`} title="Ver personagens" onClick={() => openRoster(language)}><Pencil size={17} strokeWidth={1.6} /></button></div>
             <p>{languageName[language]}</p>
             {language === 'pt-BR' && data && (!data.pack_available || data.voice_update || data.voices_pending_application) && <button className="pack-download" disabled={loading || (data.voices_pending_application ? !canChange : !data.pack_download_available)} onClick={() => void perform(data.voices_pending_application ? 'enable' : 'download_voices')}><Download size={14} />{data.voices_pending_application ? 'Aplicar atualização' : data.voice_update ? 'Atualizar vozes' : 'Baixar vozes'}</button>}
+            {language === 'pt-BR' && data?.pack_available && <button className="pack-download" disabled={!canChange} onClick={() => { if (window.confirm('Apagar as vozes PT-BR baixadas e voltar às vozes originais?')) void perform('delete_voices'); }}>Apagar vozes baixadas</button>}
           </article>;
         })}
       </div>

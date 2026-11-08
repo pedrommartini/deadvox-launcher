@@ -4,7 +4,7 @@ An independent community dubbing platform for Deadlock, built around
 character-by-character voice packs and a dedicated Windows launcher.
 **AI Assisted • Human Directed.** The dark interface
 offers Original and PT-BR audio, hero portraits, voice-pack coverage and a
-Play Deadlock button. Current client version: `0.1.0-beta.2`.
+Play Deadlock button. Current client version: `0.1.0-beta.3`.
 
 The launcher and installer source are available under the MIT License in
 `pedrommartini/deadvox-launcher`. This repository is not the public download
@@ -25,7 +25,7 @@ starting the game, DeadVox restores the selected PT-BR mounts and their priority
 if Steam or the mod manager changed them. Original selection remains respected.
 
 The local packs include Lady Geist (1,835 speech lines), Archmother (898),
-Hidden King (880), and The Urn (341). Original sounds and creative performances remain preserved.
+Hidden King (880), The Urn (341), and The Shopkeeper (531). Original sounds and creative performances remain preserved.
 Other heroes appear in the catalog but do not yet have an available voice pack.
 
 Windows x64, Steam, Deadlock and the WebView2 runtime are required. Saved settings

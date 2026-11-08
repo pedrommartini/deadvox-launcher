@@ -1,6 +1,6 @@
 [package]
 name = "deadlock-dubbing"
-version = "0.1.0-beta.2"
+version = "0.1.0-beta.3"
 edition = "2024"
 description = "DeadVox community dubbing launcher for Deadlock"
 publish = false

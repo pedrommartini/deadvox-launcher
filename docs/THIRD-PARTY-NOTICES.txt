@@ -1,4 +1,4 @@
-DeadVox 0.1.0-beta.2 - Third-party notices
+DeadVox 0.1.0-beta.3 - Third-party notices
 
 DeadVox application source is proprietary. Third-party components retain their own licenses.
 This inventory includes the locked Windows Rust dependency graph (including build tools)

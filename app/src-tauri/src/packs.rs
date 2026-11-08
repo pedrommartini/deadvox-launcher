@@ -194,6 +194,40 @@ pub fn disable(
     Ok(())
 }
 
+pub fn remove(root: &Path, game_root: &Path, data: &Path, catalog: &PackCatalog, report: &Reporter<'_>) -> Result<(), String> {
+    validate_catalog(catalog)?;
+    let state = install::load_state(data)?;
+    for (id, hash) in &state.mounted_packs {
+        if id.is_empty() || !id.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-')
+            || hash.len() != 64 || !hash.chars().all(|c| c.is_ascii_hexdigit()) {
+            return Err("Invalid stored voice package identity.".into());
+        }
+    }
+    let game_info = fs::read_to_string(game_root.join("game/citadel/gameinfo.gi")).map_err(|e| e.to_string())?;
+    if install::has_block(&game_info) {
+        disable(game_root, data, catalog, report)?;
+    }
+    let _guard = game::LaunchGuard::acquire(game_root)?;
+    for pack in &catalog.packs {
+        let file = root.join(&pack.file);
+        if file.exists() {
+            if !valid_file(&file, pack) { return Err("A voice file is unrecognized and was preserved.".into()); }
+            fs::remove_file(file).map_err(|e| e.to_string())?;
+        }
+    }
+    for (id, hash) in &state.mounted_packs {
+        let file = archive(game_root, id, hash);
+        if file.exists() {
+            if install::sha256(&file)? != *hash { return Err("A mounted voice file is unrecognized and was preserved.".into()); }
+            fs::remove_file(file).map_err(|e| e.to_string())?;
+        }
+    }
+    let mut updated = install::load_state(data)?;
+    updated.mounted_packs.clear();
+    updated.voices_enabled = Some(false);
+    install::save_state(data, &updated)
+}
+
 /// Restore the selected PT-BR mounts after DMM/Steam edits, before launching.
 /// Read-only status never repairs files; an explicit Original selection wins.
 pub fn ensure_priority(
@@ -231,6 +265,22 @@ pub fn ensure_priority(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn remove_restores_original_and_deletes_known_packages() {
+        let (root, game_root, catalog) = setup();
+        let data = root.join("user-data");
+        let info = game_root.join("game/citadel/gameinfo.gi");
+        let original = fs::read(&info).unwrap();
+        enable(&root, &game_root, &data, &catalog, &crate::progress::quiet).unwrap();
+        remove(&root, &game_root, &data, &catalog, &crate::progress::quiet).unwrap();
+        assert_eq!(fs::read(info).unwrap(), original);
+        for pack in &catalog.packs {
+            assert!(!root.join(&pack.file).exists());
+            assert!(!archive(&game_root, &pack.id, &pack.sha256).exists());
+        }
+        assert!(install::load_state(&data).unwrap().mounted_packs.is_empty());
+        fs::remove_dir_all(root).unwrap();
+    }
     #[test]
     fn status_cache_invalidates_changed_files_and_operations_still_verify_uncached() {
         let (root, _, catalog) = setup();
