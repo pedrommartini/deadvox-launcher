@@ -5,6 +5,10 @@ on:
     branches: [main, codex/signpath-windows-build]
   workflow_dispatch:
 
+concurrency:
+  group: deadvox-windows-build
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
