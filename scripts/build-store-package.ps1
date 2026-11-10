@@ -8,8 +8,14 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
-$makeAppx = Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits\10\bin\x64\makeappx.exe'
-if (!(Test-Path -LiteralPath $makeAppx -PathType Leaf)) { throw 'Install the Windows SDK with MakeAppx before building a Store package.' }
+$sdkBin = Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits\10\bin'
+$makeAppx = @(
+    Join-Path $sdkBin 'x64\makeappx.exe'
+    Get-ChildItem -LiteralPath $sdkBin -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+        Join-Path $_.FullName 'x64\makeappx.exe'
+    }
+) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -Last 1
+if (!$makeAppx) { throw 'Install the Windows SDK with MakeAppx before building a Store package.' }
 $versionParts = $PackageVersion.Split('.') | ForEach-Object { [int]$_ }
 if ($versionParts | Where-Object { $_ -gt 65535 }) { throw 'Each MSIX version component must be at most 65535.' }
 
