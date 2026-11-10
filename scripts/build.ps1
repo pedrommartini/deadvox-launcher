@@ -16,7 +16,9 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Launcher dependency installation failed.' }
     }
     if (!$SkipTests) {
-        cargo test --manifest-path src-tauri/Cargo.toml --locked $(if ($Store) { "--features store" })
+        $cargoTest = @('test', '--manifest-path', 'src-tauri/Cargo.toml', '--locked')
+        if ($Store) { $cargoTest += @('--features', 'store') }
+        & cargo @cargoTest
         if ($LASTEXITCODE -ne 0) { throw 'Native launcher checks failed.' }
     }
     $desktopBuild = @('run', 'desktop:build')
