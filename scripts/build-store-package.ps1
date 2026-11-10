@@ -2,13 +2,13 @@ param(
     [Parameter(Mandatory=$true)][ValidatePattern('^[A-Za-z0-9.-]{3,50}$')][string]$IdentityName,
     [Parameter(Mandatory=$true)][ValidatePattern('^CN=.+')][string]$Publisher,
     [Parameter(Mandatory=$true)][ValidateLength(1,256)][string]$PublisherDisplayName,
-    [Parameter(Mandatory=$true)][ValidatePattern('^\\d{1,5}\\.\\d{1,5}\\.\\d{1,5}\\.\\d{1,5}$')][string]$PackageVersion,
+    [Parameter(Mandatory=$true)][ValidatePattern('^\d{1,5}\.\d{1,5}\.\d{1,5}\.\d{1,5}$')][string]$PackageVersion,
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9_.-]*$')][string]$OutputName = 'store',
     [switch]$SkipTests
 )
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
-$makeAppx = Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits\\10\\bin\\x64\\makeappx.exe'
+$makeAppx = Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits\10\bin\x64\makeappx.exe'
 if (!(Test-Path -LiteralPath $makeAppx -PathType Leaf)) { throw 'Install the Windows SDK with MakeAppx before building a Store package.' }
 $versionParts = $PackageVersion.Split('.') | ForEach-Object { [int]$_ }
 if ($versionParts | Where-Object { $_ -gt 65535 }) { throw 'Each MSIX version component must be at most 65535.' }
@@ -21,13 +21,13 @@ if ($LASTEXITCODE -ne 0) { throw 'Store launcher build failed.' }
 $output = Join-Path $workspace ('builds/' + $OutputName)
 $stage = Join-Path $output '.msix-stage'
 if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
-$programFiles = Join-Path $stage 'VFS\\ProgramFilesX64\\DeadVox'
+$programFiles = Join-Path $stage 'VFS\ProgramFilesX64\DeadVox'
 $assets = Join-Path $stage 'Assets'
 New-Item -ItemType Directory -Path $programFiles, $assets -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $output 'DeadVox.exe') -Destination (Join-Path $programFiles 'DeadVox.exe')
 Add-Type -AssemblyName System.Drawing
 function Save-IconAsset([string]$Path, [int]$Width, [int]$Height) {
-    $source = [System.Drawing.Image]::FromFile((Join-Path $workspace 'app\\src-tauri\\icons\\icon.png'))
+    $source = [System.Drawing.Image]::FromFile((Join-Path $workspace 'app\src-tauri\icons\icon.png'))
     try {
         $bitmap = [System.Drawing.Bitmap]::new($Width, $Height)
         $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
@@ -66,13 +66,13 @@ $xml = @"
   <Properties>
     <DisplayName>DeadVox</DisplayName>
     <PublisherDisplayName>$PublisherDisplayName</PublisherDisplayName>
-    <Logo>Assets\\StoreLogo.png</Logo>
+    <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Resources><Resource Language="pt-br" /></Resources>
   <Applications>
-    <Application Id="App" Executable="VFS\\ProgramFilesX64\\DeadVox\\DeadVox.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="DeadVox" Description="Brazilian Portuguese voice-pack launcher for Deadlock." BackgroundColor="#0D0D0F" Square150x150Logo="Assets\\Square150x150Logo.png" Square44x44Logo="Assets\\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\\Wide310x150Logo.png" Square71x71Logo="Assets\\Square71x71Logo.png" Square310x310Logo="Assets\\Square310x310Logo.png" />
+    <Application Id="App" Executable="VFS\ProgramFilesX64\DeadVox\DeadVox.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="DeadVox" Description="Brazilian Portuguese voice-pack launcher for Deadlock." BackgroundColor="#0D0D0F" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\Square71x71Logo.png" Square310x310Logo="Assets\Square310x310Logo.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
