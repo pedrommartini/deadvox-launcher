@@ -74,6 +74,9 @@ $xml = @"
     <PublisherDisplayName>$PublisherDisplayName</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
   <Resources><Resource Language="pt-br" /></Resources>
   <Applications>
     <Application Id="App" Executable="VFS\ProgramFilesX64\DeadVox\DeadVox.exe" EntryPoint="Windows.FullTrustApplication">
