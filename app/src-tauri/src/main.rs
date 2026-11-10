@@ -14,6 +14,20 @@ use tauri::{Emitter, Manager, image::Image};
 
 static BACKEND_LOCK: Mutex<()> = Mutex::new(());
 
+fn data_root(root: &std::path::Path) -> Result<PathBuf, String> {
+    #[cfg(feature = "store")]
+    {
+        let _ = root;
+        let local_data = std::env::var_os("LOCALAPPDATA")
+            .ok_or("Could not locate the local application data folder.")?;
+        let path = PathBuf::from(local_data).join("DeadVox");
+        std::fs::create_dir_all(&path).map_err(|error| error.to_string())?;
+        return Ok(path);
+    }
+    #[cfg(not(feature = "store"))]
+    Ok(root.join("user-data"))
+}
+
 fn native_action(
     action: &str,
     game_path: Option<&str>,
@@ -23,8 +37,20 @@ fn native_action(
         .try_lock()
         .map_err(|_| "Please wait for the current operation to finish.".to_string())?;
     let _operation = progress::Operation::acquire()?;
-    let root = engine::executable_root()?;
-    engine::action_with_progress(action, &root, &root.join("user-data"), game_path, reporter)
+    let executable_root = engine::executable_root()?;
+    let data = data_root(&executable_root)?;
+    #[cfg(feature = "store")]
+    if action == "update_client" {
+        return Err("The Microsoft Store updates DeadVox automatically.".into());
+    }
+    #[cfg(feature = "store")]
+    {
+        let content = data.join("content");
+        std::fs::create_dir_all(&content).map_err(|error| error.to_string())?;
+        return engine::action_with_progress(action, &content, &data, game_path, reporter);
+    }
+    #[cfg(not(feature = "store"))]
+    engine::action_with_progress(action, &executable_root, &data, game_path, reporter)
 }
 
 #[tauri::command]
@@ -83,11 +109,12 @@ fn main() {
             &progress::quiet,
         );
         let root = engine::executable_root().unwrap();
+        let data = data_root(&root).unwrap_or_else(|_| root.join("user-data"));
         let path = arguments
             .iter()
             .find_map(|arg| arg.strip_prefix("--report="))
             .map(PathBuf::from)
-            .unwrap_or_else(|| root.join("user-data/native-check.json"));
+            .unwrap_or_else(|| data.join("native-check.json"));
         let (payload, exit_code) = match result {
             Ok(value) => (serde_json::to_value(value).unwrap(), 0),
             Err(error) => (serde_json::json!({ "error": error }), 1),

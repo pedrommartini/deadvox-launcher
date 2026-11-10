@@ -1,0 +1,37 @@
+name: Windows launcher build
+
+on:
+  push:
+    branches: [main, codex/signpath-windows-build]
+  workflow_dispatch:
+
+concurrency:
+  group: deadvox-windows-build
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Test and build launcher
+        shell: pwsh
+        run: ./scripts/build.ps1 -OutputName windows-ci
+      - name: Build unsigned Store validation package
+        shell: pwsh
+        run: ./scripts/build-store-package.ps1 -IdentityName DeadVox.Store.Test -Publisher 'CN=DeadVox Test' -PublisherDisplayName 'DeadVox Test' -PackageVersion 0.1.0.3 -OutputName store-ci
+      - uses: actions/upload-artifact@v7
+        with:
+          name: DeadVox-Store-validation
+          path: builds/store-ci/DeadVox.msix
+          if-no-files-found: error

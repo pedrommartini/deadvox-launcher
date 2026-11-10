@@ -250,17 +250,20 @@ pub fn check(data: &Path, report: &Reporter<'_>) -> Result<(), String> {
     let mut available = cached(data);
     available.repository = Some(repository.clone());
     let mut errors = Vec::new();
-    report("Checking launcher updates", Some(10.0));
-    let url = format!(
-        "https://github.com/{repository}/releases/download/{}/client-update.json",
-        config.client_channel
-    );
-    match read_json::<ClientRelease>(&client, &url).and_then(|v| {
-        validate_client(&v, &repository)?;
-        Ok(v)
-    }) {
-        Ok(value) => available.client = Some(value),
-        Err(e) => errors.push(e),
+    #[cfg(not(feature = "store"))]
+    {
+        report("Checking launcher updates", Some(10.0));
+        let url = format!(
+            "https://github.com/{repository}/releases/download/{}/client-update.json",
+            config.client_channel
+        );
+        match read_json::<ClientRelease>(&client, &url).and_then(|v| {
+            validate_client(&v, &repository)?;
+            Ok(v)
+        }) {
+            Ok(value) => available.client = Some(value),
+            Err(e) => errors.push(e),
+        }
     }
     report("Checking voice updates", Some(55.0));
     let url = format!(
