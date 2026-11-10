@@ -1,4 +1,4 @@
-param([switch]$WithVoicePack, [switch]$SkipTests,
+param([switch]$WithVoicePack, [switch]$SkipTests, [switch]$Store,
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9_.-]*$')][string]$OutputName = 'pre-alpha')
 $ErrorActionPreference = 'Stop'
 $appWorkspace = Split-Path -Parent $PSScriptRoot
@@ -16,10 +16,12 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Launcher dependency installation failed.' }
     }
     if (!$SkipTests) {
-        cargo test --manifest-path src-tauri/Cargo.toml --locked
+        cargo test --manifest-path src-tauri/Cargo.toml --locked $(if ($Store) { "--features store" })
         if ($LASTEXITCODE -ne 0) { throw 'Native launcher checks failed.' }
     }
-    npm.cmd run desktop:build
+    $desktopBuild = @('run', 'desktop:build')
+    if ($Store) { $desktopBuild += @('--', '--features', 'store') }
+    & npm.cmd @desktopBuild
     if ($LASTEXITCODE -ne 0) { throw 'Standalone launcher compilation failed.' }
 } finally { Pop-Location }
 $outputDirectory = Join-Path $appWorkspace ('builds/' + $OutputName)
@@ -29,6 +31,7 @@ Copy-Item -LiteralPath (Join-Path $appWorkspace 'docs/PORTABLE-README.txt') -Des
 Copy-Item -LiteralPath (Join-Path $appWorkspace 'docs/THIRD-PARTY-NOTICES.txt') -Destination (Join-Path $outputDirectory 'THIRD-PARTY-NOTICES.txt') -Force
 $receipt = [ordered]@{
     version = (Get-Content -Raw -LiteralPath (Join-Path $appWorkspace 'app/package.json') | ConvertFrom-Json).version
+    store = [bool]$Store
     executable_sha256 = (Get-FileHash -LiteralPath (Join-Path $outputDirectory 'DeadVox.exe')).Hash.ToLowerInvariant()
     update_source_sha256 = (Get-FileHash -LiteralPath (Join-Path $appWorkspace 'app/src-tauri/resources/update-source.json')).Hash.ToLowerInvariant()
     third_party_notices_sha256 = (Get-FileHash -LiteralPath (Join-Path $outputDirectory 'THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant()
