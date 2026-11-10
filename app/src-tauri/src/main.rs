@@ -37,13 +37,20 @@ fn native_action(
         .try_lock()
         .map_err(|_| "Please wait for the current operation to finish.".to_string())?;
     let _operation = progress::Operation::acquire()?;
-    let root = engine::executable_root()?;
-    let data = data_root(&root)?;
+    let executable_root = engine::executable_root()?;
+    let data = data_root(&executable_root)?;
     #[cfg(feature = "store")]
     if action == "update_client" {
         return Err("The Microsoft Store updates DeadVox automatically.".into());
     }
-    engine::action_with_progress(action, &root, &data, game_path, reporter)
+    #[cfg(feature = "store")]
+    {
+        let content = data.join("content");
+        std::fs::create_dir_all(&content).map_err(|error| error.to_string())?;
+        return engine::action_with_progress(action, &content, &data, game_path, reporter);
+    }
+    #[cfg(not(feature = "store"))]
+    engine::action_with_progress(action, &executable_root, &data, game_path, reporter)
 }
 
 #[tauri::command]
