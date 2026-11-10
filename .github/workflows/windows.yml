@@ -23,3 +23,11 @@ jobs:
       - name: Test and build launcher
         shell: pwsh
         run: ./scripts/build.ps1 -OutputName windows-ci
+      - name: Build unsigned Store validation package
+        shell: pwsh
+        run: ./scripts/build-store-package.ps1 -IdentityName DeadVox.Store.Test -Publisher 'CN=DeadVox Test' -PublisherDisplayName 'DeadVox Test' -PackageVersion 0.1.0.3 -OutputName store-ci
+      - uses: actions/upload-artifact@v7
+        with:
+          name: DeadVox-Store-validation
+          path: builds/store-ci/DeadVox.msix
+          if-no-files-found: error
